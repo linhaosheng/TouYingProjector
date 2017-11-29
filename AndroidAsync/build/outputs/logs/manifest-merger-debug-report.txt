@@ -1,0 +1,51 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/haoshenglin/AndroidStudioProjects/TouYingProjector/AndroidAsync/AndroidManifest.xml:1:1-13:12
+INJECTED from /Users/haoshenglin/AndroidStudioProjects/TouYingProjector/AndroidAsync/AndroidManifest.xml:1:1-13:12
+INJECTED from /Users/haoshenglin/AndroidStudioProjects/TouYingProjector/AndroidAsync/AndroidManifest.xml:1:1-13:12
+INJECTED from /Users/haoshenglin/AndroidStudioProjects/TouYingProjector/AndroidAsync/AndroidManifest.xml:1:1-13:12
+INJECTED from /Users/haoshenglin/AndroidStudioProjects/TouYingProjector/AndroidAsync/AndroidManifest.xml:1:1-13:12
+INJECTED from /Users/haoshenglin/AndroidStudioProjects/TouYingProjector/AndroidAsync/AndroidManifest.xml:1:1-13:12
+INJECTED from /Users/haoshenglin/AndroidStudioProjects/TouYingProjector/AndroidAsync/AndroidManifest.xml:1:1-13:12
+	package
+		ADDED from /Users/haoshenglin/AndroidStudioProjects/TouYingProjector/AndroidAsync/AndroidManifest.xml:2:5-37
+		INJECTED from /Users/haoshenglin/AndroidStudioProjects/TouYingProjector/AndroidAsync/AndroidManifest.xml
+		INJECTED from /Users/haoshenglin/AndroidStudioProjects/TouYingProjector/AndroidAsync/AndroidManifest.xml
+	android:versionName
+		ADDED from /Users/haoshenglin/AndroidStudioProjects/TouYingProjector/AndroidAsync/AndroidManifest.xml:4:5-32
+		INJECTED from /Users/haoshenglin/AndroidStudioProjects/TouYingProjector/AndroidAsync/AndroidManifest.xml
+		INJECTED from /Users/haoshenglin/AndroidStudioProjects/TouYingProjector/AndroidAsync/AndroidManifest.xml
+	xmlns:android
+		ADDED from /Users/haoshenglin/AndroidStudioProjects/TouYingProjector/AndroidAsync/AndroidManifest.xml:1:11-69
+	android:versionCode
+		ADDED from /Users/haoshenglin/AndroidStudioProjects/TouYingProjector/AndroidAsync/AndroidManifest.xml:3:5-30
+		INJECTED from /Users/haoshenglin/AndroidStudioProjects/TouYingProjector/AndroidAsync/AndroidManifest.xml
+		INJECTED from /Users/haoshenglin/AndroidStudioProjects/TouYingProjector/AndroidAsync/AndroidManifest.xml
+uses-permission#android.permission.INTERNET
+ADDED from /Users/haoshenglin/AndroidStudioProjects/TouYingProjector/AndroidAsync/AndroidManifest.xml:6:5-66
+	android:name
+		ADDED from /Users/haoshenglin/AndroidStudioProjects/TouYingProjector/AndroidAsync/AndroidManifest.xml:6:22-64
+uses-permission#android.permission.ACCESS_WIFI_STATE
+ADDED from /Users/haoshenglin/AndroidStudioProjects/TouYingProjector/AndroidAsync/AndroidManifest.xml:7:5-92
+	android:name
+		ADDED from /Users/haoshenglin/AndroidStudioProjects/TouYingProjector/AndroidAsync/AndroidManifest.xml:7:22-73
+uses-permission#android.permission.CHANGE_WIFI_STATE
+ADDED from /Users/haoshenglin/AndroidStudioProjects/TouYingProjector/AndroidAsync/AndroidManifest.xml:8:5-92
+	android:name
+		ADDED from /Users/haoshenglin/AndroidStudioProjects/TouYingProjector/AndroidAsync/AndroidManifest.xml:8:22-73
+application
+ADDED from /Users/haoshenglin/AndroidStudioProjects/TouYingProjector/AndroidAsync/AndroidManifest.xml:10:5-11:19
+uses-sdk
+INJECTED from /Users/haoshenglin/AndroidStudioProjects/TouYingProjector/AndroidAsync/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/haoshenglin/AndroidStudioProjects/TouYingProjector/AndroidAsync/AndroidManifest.xml
+INJECTED from /Users/haoshenglin/AndroidStudioProjects/TouYingProjector/AndroidAsync/AndroidManifest.xml
+INJECTED from /Users/haoshenglin/AndroidStudioProjects/TouYingProjector/AndroidAsync/AndroidManifest.xml
+INJECTED from /Users/haoshenglin/AndroidStudioProjects/TouYingProjector/AndroidAsync/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /Users/haoshenglin/AndroidStudioProjects/TouYingProjector/AndroidAsync/AndroidManifest.xml
+		ADDED from /Users/haoshenglin/AndroidStudioProjects/TouYingProjector/AndroidAsync/AndroidManifest.xml
+		INJECTED from /Users/haoshenglin/AndroidStudioProjects/TouYingProjector/AndroidAsync/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /Users/haoshenglin/AndroidStudioProjects/TouYingProjector/AndroidAsync/AndroidManifest.xml
+		ADDED from /Users/haoshenglin/AndroidStudioProjects/TouYingProjector/AndroidAsync/AndroidManifest.xml
+		INJECTED from /Users/haoshenglin/AndroidStudioProjects/TouYingProjector/AndroidAsync/AndroidManifest.xml

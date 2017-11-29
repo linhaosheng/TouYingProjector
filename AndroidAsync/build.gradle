@@ -1,0 +1,37 @@
+apply plugin: 'com.android.library'
+
+android {
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+
+            jniLibs.srcDirs = ['libs/']
+
+            java.srcDirs=['src/'
+//                          , '../conscrypt/'
+//                          , '../compat/'
+            ]
+        }
+        androidTest.java.srcDirs=['test/src/']
+        androidTest.res.srcDirs=['test/res/']
+        androidTest.assets.srcDirs=['test/assets/']
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    defaultConfig {
+        targetSdkVersion 24
+        minSdkVersion 9
+    }
+
+    compileSdkVersion project.hasProperty('global_compileSdkVersion') ? global_compileSdkVersion : 25
+    buildToolsVersion project.hasProperty('global_buildToolsVersion') ? global_buildToolsVersion : '25.0.2'
+    buildToolsVersion '26.0.2'
+}
+
+// upload to maven task
+if (System.getenv().I_AM_KOUSH == 'true') {
+  apply from: 'https://raw.githubusercontent.com/koush/mvn-repo/master/maven.gradle'
+}
