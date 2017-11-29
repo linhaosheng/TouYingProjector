@@ -45,16 +45,6 @@ import me.leefeng.promptlibrary.PromptDialog;
 public class MainActivity extends AppCompatActivity implements ExecuteResultCallBack, TransportCallBack,PromptButtonListener {
 
 
-    //    @BindView(R.id.picture)
-//    Button picture;
-//    @BindView(R.id.connect)
-//    Button connect;
-//    @BindView(R.id.video)
-//    Button video;
-//    @BindView(R.id.music)
-//    Button music;
-//    @BindView(R.id.mirror)
-//    Button mirror;
     @BindView(R.id.tabView)
     TabView tabView;
     @BindView(R.id.back)
@@ -68,29 +58,24 @@ public class MainActivity extends AppCompatActivity implements ExecuteResultCall
     public static HpplayLinkControl hpplayLinkControl;
     ArrayList<DataInfo> dataInfos = new ArrayList<>();
     HashMap<DataInfo, String> dataInfoStringHashMap;
-
-    PictureFragment pictureFragment;
-    MusicFragment musicFragment;
-    VideoFragment videoFragment;
-    MirrorFragment mirrorFragment;
+    List<CastDeviceInfo> castDeviceInfoList = new ArrayList<>();
     FragmentManager fragmentManager;
     FragmentTransaction transaction;
 
     private WaitDialogUtil waitDialogUtil;
     PromptDialog promptDialog;
     PromptButton promptButton;
+    private boolean isFindConnect;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //  EventBus.getDefault().register(this);
         ButterKnife.bind(this);
         initView();
         initData();
         connect();
         getDataAndBuildServer();
-        //getDataAndBuildServer();
     }
 
     private void initView() {
@@ -100,7 +85,6 @@ public class MainActivity extends AppCompatActivity implements ExecuteResultCall
         TabViewChild tabViewChild02 = new TabViewChild(R.mipmap.redvideo, R.mipmap.whitevideo, "视频", VideoFragment.newInstance("视频"));
         TabViewChild tabViewChild03 = new TabViewChild(R.mipmap.redmusic, R.mipmap.whitemusic, "音乐", MusicFragment.newInstance("音乐"));
         TabViewChild tabViewChild04 = new TabViewChild(R.mipmap.redmirr, R.mipmap.whitemirr, "镜像", MirrorFragment.newInstance("镜像"));
-        //TabViewChild tabViewChild05=new TabViewChild(R.drawable.tab05_sel,R.drawable.tab05_unsel,"我的",  FragmentCommon.newInstance("我的"));
         tabViewChildList.add(tabViewChild01);
         tabViewChildList.add(tabViewChild02);
         tabViewChildList.add(tabViewChild03);
@@ -128,8 +112,13 @@ public class MainActivity extends AppCompatActivity implements ExecuteResultCall
                 case FIND_DEVICE:
                     waitDialogUtil.dismiss();
                     break;
-                case 0:
-                    promptDialog.showAlertSheet("",true,promptButton,new PromptButton("note 3",MainActivity.this),new PromptButton("note 3",MainActivity.this));
+                case CONNECT_DEVICE:
+                    String phoneNum = android.os.Build.MODEL;
+                    if (castDeviceInfoList.size()==0){
+                        promptDialog.showAlertSheet("",true,promptButton,new PromptButton("找不到设备",MainActivity.this),new PromptButton(phoneNum,MainActivity.this));
+                    }else {
+                        promptDialog.showAlertSheet("",true,promptButton,new PromptButton(phoneNum,MainActivity.this),new PromptButton(castDeviceInfoList.get(0).getHpplayLinkName(),MainActivity.this));
+                    }
 
             }
         }
@@ -156,83 +145,6 @@ public class MainActivity extends AppCompatActivity implements ExecuteResultCall
         MyApplication.instance.setVideoList(videoList);
         MyApplication.instance.setDataInfoStringHashMap(dataInfoStringHashMap);
     }
-//
-//    @OnClick({R.id.connect, R.id.picture, R.id.music, R.id.video, R.id.mirror})
-//    public void onViewClicked(View view) {
-//        int id = view.getId();
-//        switch (id) {
-//            case R.id.connect:
-//                connect();
-//                break;
-//            case R.id.picture:
-//                fragmentDeal(R.id.picture);
-//                break;
-//            case R.id.music:
-//                fragmentDeal(R.id.music);
-//                break;
-//            case R.id.video:
-//                fragmentDeal(R.id.video);
-//                break;
-//            case R.id.mirror:
-//                fragmentDeal(R.id.mirror);
-//                break;
-//        }
-//    }
-
-//    public void fragmentDeal(int id) {
-//        hide();
-//        switch (id) {
-//            case R.id.picture:
-//                if (pictureFragment == null) {
-//                    pictureFragment = new PictureFragment();
-//                    transaction.add(R.id.data_show, pictureFragment);
-//                } else {
-//                    transaction.add(R.id.data_show, pictureFragment);
-//                }
-//                break;
-//            case R.id.music:
-//                if (musicFragment == null) {
-//                    musicFragment = new MusicFragment();
-//                    transaction.add(R.id.data_show, musicFragment);
-//                } else {
-//                    transaction.add(R.id.data_show, musicFragment);
-//                }
-//                break;
-//            case R.id.video:
-//                if (videoFragment == null) {
-//                    videoFragment = new VideoFragment();
-//                    transaction.add(R.id.data_show, videoFragment);
-//                } else {
-//                    transaction.add(R.id.data_show, videoFragment);
-//                }
-//                break;
-//            case R.id.mirror:
-//                if (mirrorFragment==null){
-//                    mirrorFragment = new MirrorFragment();
-//                    transaction.add(R.id.data_show,mirrorFragment);
-//                }else {
-//                    transaction.add(R.id.data_show,mirrorFragment);
-//                }
-//                break;
-//
-//        }
-//        transaction.commit();
-//    }
-
-//    public void hide() {
-//        if (pictureFragment != null) {
-//            transaction.hide(pictureFragment);
-//        }
-//        if (musicFragment != null) {
-//            transaction.hide(musicFragment);
-//        }
-//        if (videoFragment!=null){
-//            transaction.hide(videoFragment);
-//        }
-//        if (mirrorFragment!=null){
-//            transaction.hide(mirrorFragment);
-//        }
-//    }
 
     @Override
     public void onResultDate(Object o, int i) {
@@ -248,7 +160,6 @@ public class MainActivity extends AppCompatActivity implements ExecuteResultCall
     protected void onDestroy() {
         super.onDestroy();
         hpplayLinkControl.castDisconnectDevice();
-        //EventBus.getDefault().unregister(this);
     }
 
 
@@ -263,34 +174,33 @@ public class MainActivity extends AppCompatActivity implements ExecuteResultCall
 
             @Override
             public void onCastDeviceServiceAvailable(List<CastDeviceInfo> list) {
-                handler.sendEmptyMessageDelayed(FIND_DEVICE, 2000);
-                waitDialogUtil.setDialogTitle("正在连接设备");
+                if (!isFindConnect){
+                    handler.sendEmptyMessageDelayed(FIND_DEVICE, 2000);
+                    waitDialogUtil.setDialogTitle("正在连接设备");
+                }
+                castDeviceInfoList.addAll(list);
                 Log.i(TAG, "device  num==" + list.size());
-
+                MyApplication.isConnect = true;
                 if (list.size() > 0) {
                     CastDeviceInfo castDeviceInfo = list.get(0);
                     hpplayLinkControl.castConnectDevice(castDeviceInfo, new ConnectStateCallback() {
                         @Override
                         public void onConnectError() {
-                            //      Toast.makeText(MainActivity.this, "连接错误", Toast.LENGTH_SHORT).show();
                             Log.i(TAG, "onConnectError==");
                         }
 
                         @Override
                         public void onConnected() {
-                            //       Toast.makeText(MainActivity.this, "连接成功", Toast.LENGTH_SHORT).show();
                             Log.i(TAG, "onConnected==");
                         }
 
                         @Override
                         public void onConnectionBusy() {
-                            //      Toast.makeText(MainActivity.this, "连接繁忙", Toast.LENGTH_SHORT).show();
                             Log.i(TAG, "onConnectionBusy==");
                         }
 
                         @Override
                         public void onDisConnect() {
-                            //        Toast.makeText(MainActivity.this, "断开连接", Toast.LENGTH_SHORT).show();
                             Log.i(TAG, "onDisConnect==");
                         }
                     });
@@ -307,16 +217,20 @@ public class MainActivity extends AppCompatActivity implements ExecuteResultCall
                  finish();
                 break;
             case R.id.connect:
-                conectDevice();
+                connectDevice();
                 break;
         }
     }
 
-    private void conectDevice() {
+    private void connectDevice() {
         promptDialog = new PromptDialog(this);
         promptButton = new PromptButton("收起",this);
-        promptDialog.showAlertSheet("",true,promptButton,new PromptButton("正在查找...",this),new PromptButton("正在查找...",this));
-        handler.sendEmptyMessageDelayed(0,2000);
+        String phoneNum = android.os.Build.MODEL;
+        promptDialog.showAlertSheet("",true,promptButton,new PromptButton("正在查找...",this),new PromptButton(phoneNum,this));
+        connect();
+        handler.sendEmptyMessageDelayed(CONNECT_DEVICE,3000);
+        isFindConnect = true;
+        castDeviceInfoList.clear();
     }
 
     @Override

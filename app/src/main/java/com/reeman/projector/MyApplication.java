@@ -20,6 +20,7 @@ public class MyApplication extends Application {
     ArrayList<DataInfo> videoList;
 
     public static MyApplication instance;
+    public static boolean isConnect;
 
 
     @Override
