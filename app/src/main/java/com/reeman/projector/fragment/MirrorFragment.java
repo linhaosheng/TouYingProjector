@@ -69,7 +69,6 @@ public class MirrorFragment extends Fragment {
                     Toast.makeText(getActivity(),"断开成功",Toast.LENGTH_SHORT).show();
                     break;
             }
-
         }
     };
 
@@ -110,12 +109,12 @@ public class MirrorFragment extends Fragment {
             Toast.makeText(getActivity(),"请先连接设备",Toast.LENGTH_SHORT).show();
             return;
         }
-        waitDialogUtil.showDialog("正在连接...");
         boolean mirrorState = MainActivity.hpplayLinkControl.getMirrorState();
         if (mirrorState) {
             Toast.makeText(getActivity(), "镜像已连接", Toast.LENGTH_SHORT).show();
             return;
         }
+        waitDialogUtil.showDialog("正在连接...");
         MainActivity.hpplayLinkControl.castStartMirror(getActivity(), new MirrorStateCallback() {
             @Override
             public void onMirrorStarting() {
@@ -154,5 +153,4 @@ public class MirrorFragment extends Fragment {
         }
         MainActivity.hpplayLinkControl.castStopMirror();
     }
-
 }

@@ -6,4 +6,6 @@
     <color name="transparent">#00000000</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="gray">#FFA6A4A4</color>
+    <color name="black">#FF080808</color>
+    <color name="video_back">#FF292828</color>
 </resources>

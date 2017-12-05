@@ -46,14 +46,15 @@ import javax.net.ssl.SSLContext;
 @TargetApi(Build.VERSION_CODES.ECLAIR)
 public class AsyncHttpServer {
     ArrayList<AsyncServerSocket> mListeners = new ArrayList<AsyncServerSocket>();
+
     public void stop() {
         if (mListeners != null) {
-            for (AsyncServerSocket listener: mListeners) {
+            for (AsyncServerSocket listener : mListeners) {
                 listener.stop();
             }
         }
     }
-    
+
     protected boolean onRequest(AsyncHttpServerRequest request, AsyncHttpServerResponse response) {
         return false;
     }
@@ -108,7 +109,7 @@ public class AsyncHttpServer {
                         return;
                     }
 //                    System.out.println(headers.toHeaderString());
-                    
+
                     String statusLine = getStatusLine();
                     String[] parts = statusLine.split(" ");
                     fullPath = parts[1];
@@ -117,7 +118,7 @@ public class AsyncHttpServer {
                     synchronized (mActions) {
                         ArrayList<Pair> pairs = mActions.get(method);
                         if (pairs != null) {
-                            for (Pair p: pairs) {
+                            for (Pair p : pairs) {
                                 Matcher m = p.regex.matcher(path);
                                 if (m.matches()) {
                                     mMatcher = m;
@@ -147,7 +148,7 @@ public class AsyncHttpServer {
                             handleOnCompleted();
                         }
                     };
-                    
+
                     boolean handled = onRequest(this, res);
 
                     if (match == null && !handled) {
@@ -158,8 +159,7 @@ public class AsyncHttpServer {
 
                     if (!getBody().readFullyOnRequest()) {
                         onRequest(match, this, res);
-                    }
-                    else if (requestComplete) {
+                    } else if (requestComplete) {
                         onRequest(match, this, res);
                     }
                 }
@@ -186,13 +186,12 @@ public class AsyncHttpServer {
                         onRequest(match, this, res);
                     }
                 }
-                
+
                 private void handleOnCompleted() {
                     if (requestComplete && responseComplete) {
                         if (HttpUtil.isKeepAlive(Protocol.HTTP_1_1, getHeaders())) {
                             onAccepted(socket);
-                        }
-                        else {
+                        } else {
                             socket.close();
                         }
                     }
@@ -230,7 +229,7 @@ public class AsyncHttpServer {
         return server.listen(null, port, mListenCallback);
     }
 
-    public AsyncServerSocket listen(int port,String ip){
+    public AsyncServerSocket listen(int port, String ip) {
         AsyncServer.getDefault().setIp(ip);
         return listen(AsyncServer.getDefault(), port);
     }
@@ -240,7 +239,7 @@ public class AsyncHttpServer {
         if (mCompletedCallback != null)
             mCompletedCallback.onCompleted(ex);
     }
-    
+
     public AsyncServerSocket listen(int port) {
         return listen(AsyncServer.getDefault(), port);
     }
@@ -250,13 +249,13 @@ public class AsyncHttpServer {
             @Override
             public void onAccepted(AsyncSocket socket) {
                 AsyncSSLSocketWrapper.handshake(socket, null, port, sslContext.createSSLEngine(), null, null, false,
-                new AsyncSSLSocketWrapper.HandshakeCallback() {
-                    @Override
-                    public void onHandshakeCompleted(Exception e, AsyncSSLSocket socket) {
-                        if (socket != null)
-                            mListenCallback.onAccepted(socket);
-                    }
-                });
+                        new AsyncSSLSocketWrapper.HandshakeCallback() {
+                            @Override
+                            public void onHandshakeCompleted(Exception e, AsyncSSLSocket socket) {
+                                if (socket != null)
+                                    mListenCallback.onAccepted(socket);
+                            }
+                        });
             }
 
             @Override
@@ -270,25 +269,26 @@ public class AsyncHttpServer {
             }
         });
     }
-    
+
     public ListenCallback getListenCallback() {
         return mListenCallback;
     }
 
     CompletedCallback mCompletedCallback;
+
     public void setErrorCallback(CompletedCallback callback) {
-        mCompletedCallback = callback;        
+        mCompletedCallback = callback;
     }
 
     public CompletedCallback getErrorCallback() {
         return mCompletedCallback;
     }
-    
+
     private static class Pair {
         Pattern regex;
         HttpServerRequestCallback callback;
     }
-    
+
     final Hashtable<String, ArrayList<Pair>> mActions = new Hashtable<String, ArrayList<Pair>>();
 
     public void removeAction(String action, String regex) {
@@ -305,12 +305,12 @@ public class AsyncHttpServer {
             }
         }
     }
-    
+
     public void addAction(String action, String regex, HttpServerRequestCallback callback) {
         Pair p = new Pair();
         p.regex = Pattern.compile("^" + regex);
         p.callback = callback;
-        
+
         synchronized (mActions) {
             ArrayList<Pair> pairs = mActions.get(action);
             if (pairs == null) {
@@ -337,7 +337,7 @@ public class AsyncHttpServer {
                 String connection = request.getHeaders().get("Connection");
                 if (connection != null) {
                     String[] connections = connection.split(",");
-                    for (String c: connections) {
+                    for (String c : connections) {
                         if ("Upgrade".equalsIgnoreCase(c.trim())) {
                             hasUpgrade = true;
                             break;
@@ -359,11 +359,11 @@ public class AsyncHttpServer {
             }
         });
     }
-    
+
     public void get(String regex, HttpServerRequestCallback callback) {
         addAction(AsyncHttpGet.METHOD, regex, callback);
     }
-    
+
     public void post(String regex, HttpServerRequestCallback callback) {
         addAction(AsyncHttpPost.METHOD, regex, callback);
     }
@@ -373,13 +373,13 @@ public class AsyncHttpServer {
         try {
             InputStream is = am.open(asset);
             return new android.util.Pair<Integer, InputStream>(is.available(), is);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             return null;
         }
     }
 
     static Hashtable<String, String> mContentTypes = new Hashtable<String, String>();
+
     {
         mContentTypes.put("js", "application/javascript");
         mContentTypes.put("json", "application/json");
@@ -462,38 +462,37 @@ public class AsyncHttpServer {
             @Override
             public void onRequest(AsyncHttpServerRequest request, final AsyncHttpServerResponse response) {
                 String path = request.getMatcher().replaceAll("");
-
                 File file = new File(directory, path);
-
-                 //File file = new File(path);
+                //File file = new File(path);
                 if (file == null || !file.exists()) {
                     response.code(404);
                     response.end();
                     return;
                 }
-
                 try {
                     final InputStream is = new FileInputStream(file);
                     response.getHeaders().set("Content-Length", String.valueOf(file.length()));
                     response.code(200);
                     String type = getContentType(directory.getPath().substring(path.lastIndexOf(".") + 1));
-                    Log.i("type===",type);
+                    Log.i("type===", type);
                     response.getHeaders().add("Content-Type", type);
-                    Util.pump(is, response, new CompletedCallback() {
-                        @Override
-                        public void onCompleted(Exception ex) {
-                            response.end();
-                            StreamUtility.closeQuietly(is);
-                            if (is!=null){
-                                try {
-                                    is.close();
-                                }catch (Exception e){
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                    });
-                }catch (Exception e){
+                    //一定要添加这一句，否则会出错
+                    response.sendFile(file);
+//                    Util.pump(is, response, new CompletedCallback() {
+//                        @Override
+//                        public void onCompleted(Exception ex) {
+//                            response.end();
+//                            StreamUtility.closeQuietly(is);
+//                            if (is != null) {
+//                                try {
+//                                    is.close();
+//                                } catch (Exception e) {
+//                                    e.printStackTrace();
+//                                }
+//                            }
+//                        }
+//                    });
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -503,31 +502,43 @@ public class AsyncHttpServer {
             public void onRequest(AsyncHttpServerRequest request, final AsyncHttpServerResponse response) {
                 String path = request.getMatcher().replaceAll("");
                 File file = new File(directory, path);
-
-              //  File file = new File(path);
+                //  File file = new File(path);
                 if (file == null || !file.exists()) {
                     response.code(404);
                     response.end();
                     return;
                 }
-                 InputStream is=null;
+                InputStream is = null;
                 try {
                     is = new FileInputStream(file);
                     StreamUtility.closeQuietly(is);
                     response.getHeaders().set("Content-Length", String.valueOf(file.length()));
                     response.code(200);
                     String type = getContentType(directory.getPath().substring(path.lastIndexOf(".") + 1));
-                    Log.i("type===",type);
+                    Log.i("type===", type);
                     response.getHeaders().add("Content-Type", type);
                     response.writeHead();
+//                    StringBuilder builder = new StringBuilder();
+//                    builder.append("<!DOCTYPE html><html><body>");
+//                    builder.append("<video ");
+//                    builder.append("width="+300+" ");
+//                    builder.append("height="+600+" ");
+//                    builder.append("controls>");
+//                    builder.append("<source src="+getQuotaStr(path)+" ");
+//                    builder.append("type="+getQuotaStr("video/mp4")+">");
+//                    builder.append("Your browser doestn't support HTML5");
+//                    builder.append("</video>");
+//                    builder.append("</body></html>\n");
+//                    response.send(builder.toString());
+
                     response.end();
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
-                }finally {
-                    if (is!=null){
+                } finally {
+                    if (is != null) {
                         try {
                             is.close();
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
@@ -536,14 +547,14 @@ public class AsyncHttpServer {
         });
     }
 
-
-
-
+    protected String getQuotaStr(String text) {
+        return "\"" + text + "\"";
+    }
 
     public void directory(String regex, final File directory) {
         directory(regex, directory, false);
     }
-    
+
     public void directory(String regex, final File directory, final boolean list) {
         assert directory.isDirectory();
         addAction("GET", regex, new HttpServerRequestCallback() {
@@ -551,29 +562,29 @@ public class AsyncHttpServer {
             public void onRequest(AsyncHttpServerRequest request, final AsyncHttpServerResponse response) {
                 String path = request.getMatcher().replaceAll("");
                 File file = new File(directory, path);
-                
+
                 if (file.isDirectory() && list) {
                     ArrayList<File> dirs = new ArrayList<File>();
                     ArrayList<File> files = new ArrayList<File>();
-                    for (File f: file.listFiles()) {
+                    for (File f : file.listFiles()) {
                         if (f.isDirectory())
                             dirs.add(f);
                         else
                             files.add(f);
                     }
-                    
+
                     Comparator<File> c = new Comparator<File>() {
                         @Override
                         public int compare(File lhs, File rhs) {
                             return lhs.getName().compareTo(rhs.getName());
                         }
                     };
-                    
+
                     Collections.sort(dirs, c);
                     Collections.sort(files, c);
-                    
+
                     files.addAll(0, dirs);
-                    
+
                     return;
                 }
                 if (!file.isFile()) {
@@ -590,8 +601,7 @@ public class AsyncHttpServer {
                             response.end();
                         }
                     });
-                }
-                catch (FileNotFoundException ex) {
+                } catch (FileNotFoundException ex) {
                     response.code(404);
                     response.end();
                 }
@@ -600,6 +610,7 @@ public class AsyncHttpServer {
     }
 
     private static Hashtable<Integer, String> mCodes = new Hashtable<Integer, String>();
+
     static {
         mCodes.put(200, "OK");
         mCodes.put(202, "Accepted");
@@ -609,7 +620,7 @@ public class AsyncHttpServer {
         mCodes.put(302, "Found");
         mCodes.put(404, "Not Found");
     }
-    
+
     public static String getResponseCodeDescription(int code) {
         String d = mCodes.get(code);
         if (d == null)

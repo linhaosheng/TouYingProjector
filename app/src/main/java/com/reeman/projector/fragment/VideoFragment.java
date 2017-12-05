@@ -1,5 +1,6 @@
 package com.reeman.projector.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,6 +17,7 @@ import com.hpplay.link.HpplayLinkControl;
 import com.reeman.projector.activity.MainActivity;
 import com.reeman.projector.MyApplication;
 import com.reeman.projector.R;
+import com.reeman.projector.activity.VideoPlayActivity;
 import com.reeman.projector.adapter.DataAdapter;
 import com.reeman.projector.bean.DataInfo;
 import com.reeman.projector.view.MyItemDecoration;
@@ -73,9 +75,13 @@ public class VideoFragment extends Fragment {
                 MainActivity.hpplayLinkControl.castStartMediaPlay(new ExecuteResultCallBack() {
                     @Override
                     public void onResultDate(Object o, int i) {
+                        boolean play = (Boolean)o;
                         Log.i(TAG,"o=="+o+"===i"+i);
                     }
-                },10,url, HpplayLinkControl.PUSH_VIDEO,13);
+                },100,url, HpplayLinkControl.PUSH_VIDEO);
+                Intent intent = new Intent(getActivity(), VideoPlayActivity.class);
+                intent.putExtra("position",position);
+                startActivity(intent);
             }
         });
     }

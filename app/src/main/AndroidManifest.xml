@@ -32,6 +32,8 @@
         </activity>
 
         <activity android:name=".activity.ShowImgActivity"/>
+        <activity android:name=".activity.PlayMusicActivty"/>
+        <activity android:name=".activity.VideoPlayActivity"/>
     </application>
 
 </manifest>
